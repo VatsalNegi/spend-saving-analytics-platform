@@ -41,8 +41,12 @@ class Command(BaseCommand):
                 )
             )
         else:
+            user.set_password(password)
+            user.is_staff = True
+            user.is_superuser = True
+            user.save()
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Test admin user '{username}' already exists."
+                    f"Test admin user '{username}' already exists. Updated password and superuser privileges."
                 )
             )
