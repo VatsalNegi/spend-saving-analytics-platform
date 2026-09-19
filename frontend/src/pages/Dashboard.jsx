@@ -43,10 +43,11 @@ import {
 } from "lucide-react";
 
 import {
-  createSpend,
-  getDashboard,
-  getSpends,
-  updateSpend,
+    createSpend,
+    getDashboard,
+    getSpends,
+    updateSpend,
+    deleteSpend,
 } from "../services/api";
 
 import "./Dashboard.css";
@@ -1917,21 +1918,7 @@ useLayoutEffect(() => {
                 try {
                     setSaving(true);
 
-                    const token = localStorage.getItem("access_token");
-
-                    const response = await fetch(
-                        `http://127.0.0.1:8000/api/spends/${editingRecord.id}/`,
-                        {
-                            method: "DELETE",
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error("Failed to delete record.");
-                    }
+                   await deleteSpend(editingRecord.id);
 
                     alert("Record deleted successfully.");
 
