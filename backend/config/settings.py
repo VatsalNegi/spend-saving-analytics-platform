@@ -30,9 +30,13 @@ DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    for host in os.getenv("ALLOWED_HOSTS", "*").split(",")
     if host.strip()
 ]
+if "*" not in ALLOWED_HOSTS and "spend-saving-api.onrender.com" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("spend-saving-api.onrender.com")
+if ".onrender.com" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(".onrender.com")
 
 
 # Application definition
@@ -158,6 +162,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
@@ -166,6 +172,14 @@ CORS_ALLOWED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+for default_origin in [
+    "https://spend-saving-analytics-platform.vercel.app",
+    "https://spend-saving-analytics-platform-hfpxs083j.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]:
+    if default_origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(default_origin)
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
@@ -175,3 +189,11 @@ CSRF_TRUSTED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+for default_csrf in [
+    "https://spend-saving-analytics-platform.vercel.app",
+    "https://spend-saving-analytics-platform-hfpxs083j.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]:
+    if default_csrf not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(default_csrf)
