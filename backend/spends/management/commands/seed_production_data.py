@@ -34,9 +34,9 @@ class Command(BaseCommand):
         )
 
         call_command(
-            "import_excel",
-            file_path=str(excel_file),
-        )
+    "import_excel",
+    str(excel_file),
+)
 
         self.stdout.write(
             self.style.SUCCESS(
