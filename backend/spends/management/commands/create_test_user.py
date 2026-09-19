@@ -10,43 +10,27 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         User = get_user_model()
 
-        username = os.getenv("TEST_ADMIN_USERNAME", "admin")
-        password = os.getenv("TEST_ADMIN_PASSWORD")
-
-        if not password:
-            self.stdout.write(
-                self.style.ERROR(
-                    "TEST_ADMIN_PASSWORD environment variable is not set."
-                )
-            )
-            return
+        username = os.getenv("TEST_ADMIN_USERNAME", "admin").strip()
+        password = os.getenv("TEST_ADMIN_PASSWORD", "Vatsal@07").strip()
 
         user, created = User.objects.get_or_create(
             username=username,
             defaults={
                 "is_staff": True,
                 "is_superuser": True,
+                "is_active": True,
             },
         )
 
-        if created:
-            user.set_password(password)
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
+        user.set_password(password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+        user.save()
 
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Test admin user '{username}' created successfully."
-                )
+        action = "created" if created else "updated"
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Test admin user '{username}' successfully {action}."
             )
-        else:
-            user.set_password(password)
-            user.is_staff = True
-            user.is_superuser = True
-            user.save()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Test admin user '{username}' already exists. Updated password and superuser privileges."
-                )
-            )
+        )
