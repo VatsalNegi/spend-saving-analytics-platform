@@ -1,5 +1,9 @@
+from pathlib import Path
+
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+
 from spends.models import Spend
 
 
@@ -15,9 +19,24 @@ class Command(BaseCommand):
             )
             return
 
-        self.stdout.write("No spend records found. Importing sample data...")
+        excel_file = Path(settings.BASE_DIR) / "sample_data.xlsx"
 
-        call_command("import_excel")
+        if not excel_file.exists():
+            self.stdout.write(
+                self.style.ERROR(
+                    f"Sample Excel file not found: {excel_file}"
+                )
+            )
+            return
+
+        self.stdout.write(
+            "No spend records found. Importing sample data..."
+        )
+
+        call_command(
+            "import_excel",
+            file_path=str(excel_file),
+        )
 
         self.stdout.write(
             self.style.SUCCESS(
